@@ -1,5 +1,5 @@
 ### Hello There,
-I'm a full stack robotics engineer; (A little bit of a Electronics, Software, and Mechanical engineer)
+I'm a full stack robotics engineer; (A bit of an Electronics, Software, and Mechanical engineer)
 
 - 🔭 I’m currently working on:
     -  Autonomous ground vehicles and drones
