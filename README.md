@@ -1,8 +1,12 @@
 ### Hello There,
-I'm a self taught robotics engineer
+I'm a full stack robotics engineer; (A little bit of a Electronics, Software, and Mechanical engineer)
 
 - 🔭 I’m currently working on:
-    -  Autonomous ground vehicles, and drones
+    -  Autonomous ground vehicles and drones
+        - Perception
+        - Path planning
+        - Sensor Fusion
+        - Control Systems  
     -  Embedded Rust for stm32 and esp32
 - 🌱 I’m currently learning:
     -  Reinforcement learning
