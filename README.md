@@ -1,4 +1,13 @@
 ### Hello There,
+I'm a self taught robotics engineer
+
+- 🔭 I’m currently working on autonomous ground vehicles, and drones
+- 🌱 I’m currently learning reinforcement learning
+- 👯 I’m looking to collaborate on:
+    - Multi agent Robotics
+    - Soft Robotics
+    - Underactuated Controls
+
 
 ### Languages and Tools:
 
@@ -6,6 +15,7 @@
 <a href="https://www.cprogramming.com/" target="_blank"> <img align="left" alt="C" width="26px" src="https://github.com/Aakarsh-B/trying-repos/blob/master/c-programming.png"/> </a>
 <a href="https://www.w3schools.com/cpp/" target="_blank"> <img align="left" alt="C++" width="26px" src="https://github.com/Aakarsh-B/trying-repos/blob/master/c++.png"/> </a>
 <a href="https://www.python.org" target="_blank"> <img align="left" alt="Python" width="26px" src="https://github.com/Aakarsh-B/trying-repos/blob/master/python-5.svg?raw=true"/> </a>
+<a href="https://www.mathworks.com/products/matlab.html" target="_blank"> <img align="left" alt="Rust" width="26px" src="https://upload.wikimedia.org/wikipedia/commons/2/21/Matlab_Logo.png"/> </a>
 <a href="https://git-scm.com/" target="_blank"> <img align="left" alt="git" width="26px" src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg"/> </a>
 <img align="left" alt="GitHub" width="26px" src="https://github.com/Aakarsh-B/trying-repos/blob/master/github.svg" />
 
