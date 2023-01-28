@@ -6,8 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+(setq user-full-name "Deepesh Padala"
+      user-mail-address "ds3a@protonmail.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
@@ -32,17 +32,25 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-ayu-mirage)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-agenda-files '("~/Documents/org/scripting_notes.org" "~/Documents/org/todo.org"))
+(setq org-directory "~/Documents/org/")
+
+(after! lsp-rust
+  (setq lsp-rust-server 'rust-analyzer))
 
 
+(after! doom
+  (smartparens-mode -1)
+  (smartparens-global-mode -1)
+)
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -74,3 +82,87 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;; custom keybindings and functions
+(defhydra doom-window-resize-hydra (:hint nil)
+  "
+             _k_ increase height
+_h_ decrease width    _l_ increase width
+             _j_ decrease height
+"
+  ("h" evil-window-decrease-width)
+  ("j" evil-window-increase-height)
+  ("k" evil-window-decrease-height)
+  ("l" evil-window-increase-width)
+
+  ("q" nil))
+
+(map!
+    (:prefix "SPC w"
+      :desc "Hydra resize" :n "z" #'doom-window-resize-hydra/body))
+
+
+
+;; clipboard2org
+;;; Code:
+(defun clipboard2org-paste()
+  "Paste HTML as org by using pandoc, or insert an image from the clipboard.
+It inserts the image by first saving it with the unixtime name in a ./img/ sub-directory"
+  (interactive)
+  (let* ((data-file (gui-backend-get-selection 'CLIPBOARD 'text/uri-list))
+         (data-html (or (gui-backend-get-selection 'PRIMARY 'text/html) (gui-backend-get-selection 'CLIPBOARD 'text/html)))
+         (data-png (or (gui-backend-get-selection 'PRIMARY 'image/png) (gui-backend-get-selection 'CLIPBOARD 'image/png)))
+         (data-jpg (or (gui-backend-get-selection 'PRIMARY 'image/jpeg) (gui-backend-get-selection 'CLIPBOARD 'image/jpeg)))
+         (text-raw (gui-get-selection)))
+    (cond
+     (data-file (clipboard2org--file data-file))
+     (data-jpg (clipboard2org--image data-jpg ".jpg"))
+     (data-png (clipboard2org--image data-png ".png"))
+     (data-html (clipboard2org--html data-html))
+     (text-raw (yank)))))
+
+
+(map!
+    (:prefix "SPC i"
+      :desc "Paste image from clipboard" :n "i" #'clipboard2org-paste))
+
+(defun clipboard2org--file(file-url)
+  "Inserts a list of files. Useful if you copied files from your file explorer
+and want to insert links to them into your org file"
+  (let* ((decoded-file-url (decode-coding-string file-url 'raw-text t nil))
+         (decoded-file-url (substring decoded-file-url 0 -1))
+         (file-list (split-string decoded-file-url)))
+    (dolist (file-url file-list)
+      (let* ((file-url (replace-regexp-in-string "%20" " " file-url))
+            (file-name (file-name-nondirectory file-url)))
+      (insert (concat "[["file-url"]["file-name "]]\n"))))))
+
+(defun clipboard2org--html(html-data)
+  "Insert html data into the buffer.
+HTML-DATA: html data from the clipboard"
+  (let* ((decoded-html (decode-coding-string html-data 'unix))
+         (text-html (shell-command-to-string (concat "echo "  (shell-quote-argument decoded-html) "|timeout 2  pandoc --wrap=preserve -f html-native_divs-native_spans -t org"))))
+    (insert text-html)))
+
+
+(defun clipboard2org--image(image-data extension)
+  "Insert image into the buffer.
+IMAGE-DATA: Raw image-data from the clipboard
+EXTENSION: the image extensions, for example png, jpg. Additional support for others is trivial."
+  (let* ((image-directory "./img/")
+         (temp-file-name
+          (let ((coding-system-for-write 'raw-text)
+                (buffer-file-coding-system 'raw-text))
+            (make-directory image-directory t)
+            (make-temp-file "img" nil extension image-data)))
+         (file-name (replace-regexp-in-string "\\." "" (format "%s" (float-time))))
+         (new-name (concat image-directory  file-name  extension)))
+    (rename-file temp-file-name  new-name)
+    (insert "#+ATTR_ORG: :width 300\n")
+    (insert (concat  "#+CAPTION: "  "\n"))
+    (insert (concat "[[file:" new-name "][file:" new-name "]]"))
+    (org-display-inline-images)))
+
+(provide 'clipboard2org)
+;;; clipboard2org.el ends here
+Footer
